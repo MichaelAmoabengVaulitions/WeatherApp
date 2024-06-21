@@ -66,7 +66,7 @@ const HomeScreen: React.FC = () => {
             blurRadius={5}>
             <TextInput
                 style={styles.input}
-                placeholder="Enter city"
+                placeholder="Enter City"
                 placeholderTextColor={Colours.PRIMARY}
                 value={city}
                 onChangeText={(text) => {
