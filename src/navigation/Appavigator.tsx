@@ -2,6 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/home/HomeScreen';
+import { NO_HEADER } from './screenOptions';
+import { HOME_SCREEN } from './screenNames';
 
 const { Navigator, Screen } = createStackNavigator();
 
@@ -10,11 +12,9 @@ const AppNavigator = () => {
         <NavigationContainer>
             <Navigator>
                 <Screen
-                    name="Home"
+                    name={HOME_SCREEN}
                     component={HomeScreen}
-                    options={{
-                        headerShown: false,
-                    }}
+                    options={NO_HEADER}
                 />
             </Navigator>
         </NavigationContainer>
