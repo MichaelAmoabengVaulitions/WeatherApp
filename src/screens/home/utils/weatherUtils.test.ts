@@ -3,6 +3,10 @@ import { fetchWeather, validateCity } from './weatherUtils';
 import axios from 'axios';
 
 jest.mock('axios');
+jest.mock('@env', () => ({
+    WEATHER_API_KEY: 'test_api_key',
+    WEATHER_API_URL: 'http://api.weatherapi.com/v1/forecast.json',
+}));
 
 describe('weatherUtils', () => {
     describe('validateCity', () => {
