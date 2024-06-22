@@ -1,14 +1,14 @@
-// utils/weatherUtils.test.ts
 import { fetchWeather, validateCity } from './weatherUtils';
 import axios from 'axios';
 
 jest.mock('axios');
-jest.mock('@env', () => ({
-    WEATHER_API_KEY: 'test_api_key',
-    WEATHER_API_URL: 'http://api.weatherapi.com/v1/forecast.json',
-}));
 
 describe('weatherUtils', () => {
+    beforeAll(() => {
+        process.env.EXPO_PUBLIC_WEATHER_API_KEY = 'test_api_key';
+        process.env.EXPO_PUBLIC_WEATHER_API_URL = 'http://api.weatherapi.com/v1/forecast.json';
+    });
+
     describe('validateCity', () => {
         it('should return true for valid city names', () => {
             expect(validateCity('New York')).toBe(true);
@@ -62,16 +62,13 @@ describe('weatherUtils', () => {
                     ],
                 },
             };
-
             (axios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
-
             const data = await fetchWeather('London');
             expect(data).toEqual(mockWeatherData);
         });
 
         it('should throw an error for an invalid city', async () => {
             (axios.get as jest.Mock).mockRejectedValue(new Error('City not found'));
-
             await expect(fetchWeather('InvalidCity')).rejects.toThrow('City not found');
         });
     });

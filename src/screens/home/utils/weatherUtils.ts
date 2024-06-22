@@ -1,9 +1,8 @@
 import axios from 'axios';
-import { WEATHER_API_KEY, WEATHER_API_URL } from '@env';
 
 export const fetchWeather = async (city: string, hours: number = 5) => {
     const response = await axios.get(
-        `${WEATHER_API_URL}?key=${WEATHER_API_KEY}&q=${city}&hours=${hours}`,
+        `${process.env.EXPO_PUBLIC_API_URL}?key=${process.env.EXPO_PUBLIC_API_KEY}&q=${city}&hours=${hours}`,
     );
     return response.data;
 };
