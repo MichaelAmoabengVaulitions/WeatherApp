@@ -37,22 +37,23 @@ const styles = StyleSheet.create({
         color: Colours.PRIMARY,
     },
     forecastItem: {
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
+        justifyContent: 'center',
         paddingTop: SPACE_LARGE,
         paddingBottom: SPACE_SMALL,
-        borderBottomWidth: 1,
-        borderBottomColor: Colours.PRIMARY,
+        marginLeft: 28,
+        padding: 10,
+        borderRadius: 10,
+        backgroundColor: Colours.SECONDARY_TRANSLUCENT,
+        width: 100,
+        marginVertical: wp(20),
     },
     forecastIcon: {
-        width: wp(40),
-        height: wp(40),
+        width: 20,
+        height: 20,
     },
     condition: {
         color: Colours.PRIMARY,
-        width: wp(100),
     },
 });
 

@@ -1,6 +1,12 @@
 import React, { FC } from 'react';
 import { FlatList, Image, Text, View, StyleSheet } from 'react-native';
-import { SPACE_LARGE, SPACE_MEDIUM, SPACE_SMALL, wp } from '../../../utils/getResponsiveSize';
+import {
+    SCREEN_WIDTH,
+    SPACE_LARGE,
+    SPACE_MEDIUM,
+    SPACE_SMALL,
+    wp,
+} from '../../../utils/getResponsiveSize';
 import Colours from '../../../consts/Colours';
 import ForecastItem from '../../../components/ForecastItem';
 import { Forecast } from '../utils/weatherUtils';
@@ -49,9 +55,11 @@ const WeatherCard: FC<WeatherCardProps> = ({
             <Text style={styles.forecastHeader}>Forecast for the next 5 hours</Text>
 
             <FlatList
+                horizontal
                 data={fiveDayForecast}
                 keyExtractor={(item) => item?.time}
                 renderItem={renderForecastItem}
+                contentContainerStyle={styles.contentContainerStyle}
             />
         </View>
     );
@@ -62,32 +70,37 @@ const styles = StyleSheet.create({
         marginTop: SPACE_LARGE,
         alignItems: 'center',
         backgroundColor: Colours.PRIMARY_TRANSLUCENT,
-        padding: SPACE_LARGE,
         borderRadius: SPACE_MEDIUM,
+        width: SCREEN_WIDTH - 32,
+        alignSelf: 'center',
     },
+
     cityCountry: {
-        fontSize: wp(24),
+        fontSize: wp(20),
         fontWeight: 'bold',
         color: Colours.PRIMARY,
+        marginTop: SPACE_MEDIUM,
     },
     error: {
         color: Colours.ERROR,
         marginBottom: 2,
     },
     weatherCondition: {
-        fontSize: wp(18),
+        fontSize: wp(16),
         marginVertical: SPACE_SMALL,
         color: Colours.PRIMARY,
     },
     weatherIcon: {
-        width: wp(100),
-        height: wp(100),
+        width: wp(80),
+        height: wp(80),
     },
     forecastHeader: {
-        fontSize: wp(18),
+        fontSize: wp(17),
         fontWeight: 'bold',
-        marginTop: SPACE_LARGE,
         color: Colours.PRIMARY,
+    },
+    contentContainerStyle: {
+        paddingRight: SPACE_SMALL,
     },
 });
 

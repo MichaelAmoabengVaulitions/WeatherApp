@@ -6,7 +6,6 @@ import {
     ImageBackground,
     ActivityIndicator,
     KeyboardAvoidingView,
-    Platform,
 } from 'react-native';
 import {
     SCREEN_HEIGHT,
@@ -19,6 +18,7 @@ import {
 import Colours from '../../consts/Colours';
 import { TransformedWeather, fetchWeather, validateCity } from './utils/weatherUtils';
 import WeatherCard from './components/WeatherCard';
+import { isIOS } from '../../utils/platForm';
 
 const HomeScreen: React.FC = () => {
     const [city, setCity] = useState('');
@@ -44,7 +44,11 @@ const HomeScreen: React.FC = () => {
     };
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView
+            behavior={isIOS ? 'padding' : 'height'}
+            style={{
+                flex: 1,
+            }}>
             <ImageBackground
                 style={styles.container}
                 source={require('../../../assets/background.jpg')}
