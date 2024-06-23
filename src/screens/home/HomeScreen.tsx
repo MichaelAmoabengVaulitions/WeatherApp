@@ -75,7 +75,7 @@ const HomeScreen: React.FC = () => {
                         country={weather.country}
                         currentConditionIcon={weather.currentConditionIcon}
                         currentConditionText={weather.currentConditionText}
-                        fiveDayForecast={weather.fiveDayForecast}
+                        fiveHourForecast={weather.fiveHourForecast}
                     />
                 )}
             </ImageBackground>

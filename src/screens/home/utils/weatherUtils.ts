@@ -42,7 +42,7 @@ export interface TransformedWeather {
     country: string;
     currentConditionIcon: string;
     currentConditionText: string;
-    fiveDayForecast: Forecast[];
+    fiveHourForecast: Forecast[];
 }
 
 export const fetchWeather = async (city: string, days: number = 5): Promise<TransformedWeather> => {
@@ -71,7 +71,7 @@ export const fetchWeather = async (city: string, days: number = 5): Promise<Tran
             country: location.country,
             currentConditionIcon: `https:${current.condition.icon}`,
             currentConditionText: current.condition.text,
-            fiveDayForecast: fiveHourForecast,
+            fiveHourForecast,
         };
     } catch (error) {
         console.error('Error fetching weather data:', error);
