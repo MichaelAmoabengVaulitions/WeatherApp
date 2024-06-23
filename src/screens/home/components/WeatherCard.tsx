@@ -16,7 +16,7 @@ interface WeatherCardProps {
     country: string;
     currentConditionIcon: string;
     currentConditionText: string;
-    fiveDayForecast: Forecast[];
+    fiveHourForecast?: Forecast[];
 }
 
 const WeatherCard: FC<WeatherCardProps> = ({
@@ -24,7 +24,7 @@ const WeatherCard: FC<WeatherCardProps> = ({
     country,
     currentConditionText,
     currentConditionIcon,
-    fiveDayForecast,
+    fiveHourForecast,
 }) => {
     const renderForecastItem = ({ item }: any) => {
         const currentHour = new Date().getHours();
@@ -56,10 +56,13 @@ const WeatherCard: FC<WeatherCardProps> = ({
 
             <FlatList
                 horizontal
-                data={fiveDayForecast}
+                data={fiveHourForecast}
                 keyExtractor={(item) => item?.time}
                 renderItem={renderForecastItem}
                 contentContainerStyle={styles.contentContainerStyle}
+                decelerationRate={0}
+                snapToInterval={100}
+                snapToAlignment="start"
             />
         </View>
     );
