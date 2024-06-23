@@ -45,20 +45,25 @@ export interface TransformedWeather {
     fiveHourForecast?: Forecast[];
 }
 
-export const fetchWeather = async (city: string, days: number = 5): Promise<TransformedWeather> => {
+export const fetchWeather = async (city: string, days: number = 2): Promise<TransformedWeather> => {
     try {
         const response = await axios.get<WeatherData>(
             `${API_URL}?key=${API_KEY}&q=${city}&days=${days}`,
         );
 
-        const { location, current, forecast } = response?.data;
-        const now = Date.now();
-        const fiveHoursLaterEpoch = now + 5 * 60 * 60 * 1000; // Time in 5 hours in milliseconds
+        const { location, current, forecast } = response.data;
+        const now = new Date();
+        const currentTimeEpoch = now.getTime();
+        const fiveHoursLaterEpoch = currentTimeEpoch + 5 * 60 * 60 * 1000;
 
-        // Filter hourly data to include only forecasts for the next 5 hours
-        const fiveHourForecast = forecast?.forecastday?.[0]?.hour?.filter(
+        const hourlyData = [
+            ...forecast?.forecastday?.[0]?.hour,
+            ...forecast?.forecastday?.[1]?.hour,
+        ];
+
+        const fiveHourForecast = hourlyData.filter(
             (hour) =>
-                new Date(hour.time).getTime() >= now &&
+                new Date(hour.time).getTime() >= currentTimeEpoch &&
                 new Date(hour.time).getTime() <= fiveHoursLaterEpoch,
         );
 
