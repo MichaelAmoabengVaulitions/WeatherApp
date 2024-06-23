@@ -21,53 +21,40 @@ describe('HomeScreen', () => {
 
     it('should fetch and display weather data for a valid city', async () => {
         const mockWeatherData = {
-            location: {
-                name: 'London',
-                country: 'UK',
-            },
-            current: {
-                condition: {
-                    text: 'Sunny',
-                    icon: '//cdn.weatherapi.com/weather/64x64/day/113.png',
-                },
-                temp_c: 25,
-            },
-            forecast: {
-                forecastday: [
-                    {
-                        hour: [
-                            {
-                                time: '2023-06-18 01:00',
-                                temp_c: 20,
-                                condition: {
-                                    text: 'Clear',
-                                    icon: '//cdn.weatherapi.com/weather/64x64/night/113.png',
-                                },
-                            },
-                            {
-                                time: '2023-06-18 02:00',
-                                temp_c: 19,
-                                condition: {
-                                    text: 'Cloudy',
-                                    icon: '//cdn.weatherapi.com/weather/64x64/night/119.png',
-                                },
-                            },
-                        ],
+            name: 'London',
+            country: 'UK',
+            currentConditionIcon: 'https://cdn.weatherapi.com/weather/64x64/day/113.png',
+            currentConditionText: 'Sunny',
+            fiveHourForecast: [
+                {
+                    time: '2024-06-27 01:00',
+                    temp_c: 20.9,
+                    condition: {
+                        text: 'Partly Cloudy',
+                        icon: '//cdn.weatherapi.com/weather/64x64/night/116.png',
                     },
-                ],
-            },
+                },
+                {
+                    time: '2024-06-27 02:00',
+                    temp_c: 21.0,
+                    condition: {
+                        text: 'Clear',
+                        icon: '//cdn.weatherapi.com/weather/64x64/night/113.png',
+                    },
+                },
+            ],
         };
 
         (weatherUtils.fetchWeather as jest.Mock).mockResolvedValue(mockWeatherData);
         (weatherUtils.validateCity as jest.Mock).mockReturnValue(true);
 
-        const { getByPlaceholderText, getByText, queryByText, findByText } = render(<HomeScreen />);
+        const { getByPlaceholderText, getByText, queryByText } = render(<HomeScreen />);
         const input = getByPlaceholderText('Enter City');
         fireEvent.changeText(input, 'London');
         fireEvent(input, 'onEndEditing');
 
         await waitFor(() => expect(queryByText('Loading...')).toBeNull());
-        expect(await findByText('London, UK')).toBeTruthy();
+        expect(getByText('London, UK')).toBeTruthy();
         expect(getByText('Sunny')).toBeTruthy();
     });
 });

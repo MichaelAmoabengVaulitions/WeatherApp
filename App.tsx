@@ -3,9 +3,8 @@ import AppNavigator from './src/navigation/Appavigator';
 
 export default function App() {
     return (
-
         <>
-        <StatusBar style="light" />
+            <StatusBar style="light" />
             <AppNavigator />
         </>
     );
