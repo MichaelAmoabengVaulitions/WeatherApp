@@ -76,7 +76,7 @@ describe('weatherUtils', () => {
 
     //         (axios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
 
-    //         const currentTime = 1719439200; // Adjusted current time
+    //         const currentTime = 1719432200; // Adjusted current time
     //         jest.spyOn(Date, 'now').mockImplementation(() => currentTime * 1000);
 
     //         const data: TransformedWeather = await fetchWeather('London');

@@ -24,7 +24,7 @@ const WeatherCard: FC<WeatherCardProps> = ({
     country,
     currentConditionText,
     currentConditionIcon,
-                                               fiveHourForecast,
+    fiveHourForecast,
 }) => {
     const renderForecastItem = ({ item }: any) => {
         const currentHour = new Date().getHours();

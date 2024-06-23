@@ -24,7 +24,6 @@ describe('WeatherCard', () => {
                 icon: '//cdn.weatherapi.com/weather/64x64/night/113.png',
             },
         },
-        // Add more forecast data as needed...
     ];
 
     it('renders correctly with given props', () => {
@@ -34,7 +33,7 @@ describe('WeatherCard', () => {
                 country="UK"
                 currentConditionIcon="https://cdn.weatherapi.com/weather/64x64/day/113.png"
                 currentConditionText="Sunny"
-                fiveDayForecast={mockForecast}
+                fiveHourForecast={mockForecast}
             />,
         );
 
@@ -51,7 +50,7 @@ describe('WeatherCard', () => {
                 country="UK"
                 currentConditionIcon="https://cdn.weatherapi.com/weather/64x64/day/113.png"
                 currentConditionText="Sunny"
-                fiveDayForecast={mockForecast}
+                fiveHourForecast={mockForecast}
             />,
         );
 
@@ -78,7 +77,7 @@ describe('WeatherCard', () => {
                 country="UK"
                 currentConditionIcon="https://cdn.weatherapi.com/weather/64x64/day/113.png"
                 currentConditionText="Sunny"
-                fiveDayForecast={currentForecast}
+                fiveHourForecast={currentForecast}
             />,
         );
 
