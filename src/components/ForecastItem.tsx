@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingTop: SPACE_LARGE,
         paddingBottom: SPACE_SMALL,
-        marginLeft: 28,
+        marginLeft: 16,
         padding: 10,
         borderRadius: 10,
         backgroundColor: Colours.SECONDARY_TRANSLUCENT,
