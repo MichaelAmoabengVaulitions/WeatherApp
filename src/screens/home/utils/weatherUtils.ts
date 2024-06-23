@@ -45,9 +45,11 @@ export interface TransformedWeather {
     fiveDayForecast: Forecast[];
 }
 
-export const fetchWeather = async (city: string): Promise<TransformedWeather> => {
+export const fetchWeather = async (city: string, days: number = 5): Promise<TransformedWeather> => {
     try {
-        const response = await axios.get<WeatherData>(`${API_URL}?key=${API_KEY}&q=${city}&days=5`);
+        const response = await axios.get<WeatherData>(
+            `${API_URL}?key=${API_KEY}&q=${city}&days=${days}`,
+        );
 
         const { location, current, forecast } = response.data;
 
