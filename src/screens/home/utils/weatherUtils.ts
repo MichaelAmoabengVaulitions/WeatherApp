@@ -4,16 +4,16 @@ import axios from 'axios';
 const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
-interface Condition {
+export interface Condition {
     text: string;
     icon: string;
 }
 
 export interface Forecast {
+    time_epoch: number;
     time: string;
     temp_c: number;
     condition: Condition;
-    time_epoch: number;
 }
 
 export interface WeatherData {
@@ -42,7 +42,7 @@ export interface TransformedWeather {
     country: string;
     currentConditionIcon: string;
     currentConditionText: string;
-    fiveHourForecast: Forecast[];
+    fiveHourForecast?: Forecast[];
 }
 
 export const fetchWeather = async (city: string, days: number = 5): Promise<TransformedWeather> => {
@@ -51,27 +51,23 @@ export const fetchWeather = async (city: string, days: number = 5): Promise<Tran
             `${API_URL}?key=${API_KEY}&q=${city}&days=${days}`,
         );
 
-        const { location, current, forecast } = response.data;
-
-        const now: Date = new Date();
-
-        // Current time in seconds since epoch
-        const currentTimeEpoch: number = now.getTime() / 1000;
-
-        // Time in 5 hours in seconds since epoch
-        const fiveHoursLaterEpoch: number = currentTimeEpoch + 5 * 60 * 60;
+        const { location, current, forecast } = response?.data;
+        const now = Date.now();
+        const fiveHoursLaterEpoch = now + 5 * 60 * 60 * 1000; // Time in 5 hours in milliseconds
 
         // Filter hourly data to include only forecasts for the next 5 hours
-        const fiveHourForecast: Forecast[] = forecast.forecastday[0].hour.filter(
-            (hour) => hour.time_epoch >= currentTimeEpoch && hour.time_epoch <= fiveHoursLaterEpoch,
+        const fiveHourForecast = forecast?.forecastday?.[0]?.hour?.filter(
+            (hour) =>
+                new Date(hour.time).getTime() >= now &&
+                new Date(hour.time).getTime() <= fiveHoursLaterEpoch,
         );
 
         return {
-            name: location.name,
-            country: location.country,
-            currentConditionIcon: `https:${current.condition.icon}`,
+            name: location?.name,
+            country: location?.country,
+            currentConditionIcon: `https:${current?.condition?.icon}`,
             currentConditionText: current.condition.text,
-            fiveHourForecast,
+            fiveHourForecast: fiveHourForecast ?? [],
         };
     } catch (error) {
         console.error('Error fetching weather data:', error);
@@ -79,7 +75,7 @@ export const fetchWeather = async (city: string, days: number = 5): Promise<Tran
     }
 };
 
-export const validateCity = (city: string) => {
-    const regex = /^[a-zA-Z\s]+$/;
+export const validateCity = (city: string): boolean => {
+    const regex: RegExp = /^[a-zA-Z\s]+$/;
     return city.length > 0 && regex.test(city);
 };

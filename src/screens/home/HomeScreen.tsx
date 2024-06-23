@@ -71,11 +71,11 @@ const HomeScreen: React.FC = () => {
                 {loading ? <ActivityIndicator size="large" color={Colours.PRIMARY} /> : null}
                 {!!weather && (
                     <WeatherCard
-                        name={weather.name}
-                        country={weather.country}
-                        currentConditionIcon={weather.currentConditionIcon}
-                        currentConditionText={weather.currentConditionText}
-                        fiveHourForecast={weather.fiveHourForecast}
+                        name={weather?.name}
+                        country={weather?.country}
+                        currentConditionIcon={weather?.currentConditionIcon}
+                        currentConditionText={weather?.currentConditionText}
+                        fiveHourForecast={weather?.fiveHourForecast}
                     />
                 )}
             </ImageBackground>

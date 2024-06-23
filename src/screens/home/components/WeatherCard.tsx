@@ -16,7 +16,7 @@ interface WeatherCardProps {
     country: string;
     currentConditionIcon: string;
     currentConditionText: string;
-    fiveHourForecast: Forecast[];
+    fiveHourForecast?: Forecast[];
 }
 
 const WeatherCard: FC<WeatherCardProps> = ({
@@ -60,6 +60,9 @@ const WeatherCard: FC<WeatherCardProps> = ({
                 keyExtractor={(item) => item?.time}
                 renderItem={renderForecastItem}
                 contentContainerStyle={styles.contentContainerStyle}
+                decelerationRate={0}
+                snapToInterval={100}
+                snapToAlignment="start"
             />
         </View>
     );
