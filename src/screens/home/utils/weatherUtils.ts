@@ -61,7 +61,7 @@ export const fetchWeather = async (city: string, days: number = 2): Promise<Tran
             ...forecast?.forecastday?.[1]?.hour,
         ];
 
-        const fiveHourForecast = hourlyData.filter(
+        const fiveHourForecast = hourlyData?.filter(
             (hour) =>
                 new Date(hour.time).getTime() >= currentTimeEpoch &&
                 new Date(hour.time).getTime() <= fiveHoursLaterEpoch,

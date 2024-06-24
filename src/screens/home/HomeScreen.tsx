@@ -46,9 +46,7 @@ const HomeScreen: React.FC = () => {
     return (
         <KeyboardAvoidingView
             behavior={isIOS ? 'padding' : 'height'}
-            style={{
-                flex: 1,
-            }}>
+            style={styles.keyboardAvoidingView}>
             <ImageBackground
                 style={styles.container}
                 source={require('../../../assets/background.jpg')}
@@ -108,6 +106,9 @@ const styles = StyleSheet.create({
         color: Colours.ERROR,
         marginBottom: 2,
     },
+    keyboardAvoidingView: {
+        flex: 1,
+    }
 });
 
 export default HomeScreen;
