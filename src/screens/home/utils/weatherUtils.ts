@@ -37,46 +37,23 @@ export interface WeatherData {
     };
 }
 
-export interface TransformedWeather {
-    name: string;
-    country: string;
-    currentConditionIcon: string;
-    currentConditionText: string;
-    fiveHourForecast?: Forecast[];
-}
-
-export const fetchWeather = async (city: string, days: number = 2): Promise<TransformedWeather> => {
+export const fetchWeather = async (city: string): Promise<WeatherData | null | undefined> => {
     try {
         const response = await axios.get<WeatherData>(
-            `${API_URL}?key=${API_KEY}&q=${city}&days=${days}`,
+            `${API_URL}?key=${API_KEY}&q=${city}&days=2`, // Request 2 days to cover cross-day scenario
         );
 
-        const { location, current, forecast } = response.data;
-        const now = new Date();
-        const currentTimeEpoch = now.getTime();
-        const fiveHoursLaterEpoch = currentTimeEpoch + 5 * 60 * 60 * 1000;
+        if (!response?.data) return null;
 
-        const hourlyData = [
-            ...forecast?.forecastday?.[0]?.hour,
-            ...forecast?.forecastday?.[1]?.hour,
-        ];
-
-        const fiveHourForecast = hourlyData?.filter(
-            (hour) =>
-                new Date(hour.time).getTime() >= currentTimeEpoch &&
-                new Date(hour.time).getTime() <= fiveHoursLaterEpoch,
-        );
+        const { location, current, forecast } = response?.data;
 
         return {
-            name: location?.name,
-            country: location?.country,
-            currentConditionIcon: `https:${current?.condition?.icon}`,
-            currentConditionText: current.condition.text,
-            fiveHourForecast: fiveHourForecast ?? [],
+            location,
+            current,
+            forecast,
         };
     } catch (error) {
-        console.error('Error fetching weather data:', error);
-        throw new Error('Failed to fetch weather data');
+        console.log('Error getting weather data', error);
     }
 };
 

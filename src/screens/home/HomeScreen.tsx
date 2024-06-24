@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// HomeScreen.tsx
+import React, { useState, useMemo } from 'react';
 import {
     Text,
     TextInput,
@@ -16,17 +17,17 @@ import {
     wp,
 } from '../../utils/getResponsiveSize';
 import Colours from '../../consts/Colours';
-import { TransformedWeather, fetchWeather, validateCity } from './utils/weatherUtils';
+import { WeatherData, fetchWeather, validateCity } from './utils/weatherUtils';
 import WeatherCard from './components/WeatherCard';
 import { isIOS } from '../../utils/platForm';
 
 const HomeScreen: React.FC = () => {
     const [city, setCity] = useState('');
-    const [weather, setWeather] = useState<TransformedWeather | null>(null);
+    const [weather, setWeather] = useState<WeatherData | null | undefined>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleFetchWeather = async () => {
+    const handleFetchWeather = async (city: string) => {
         if (!validateCity(city)) {
             setError('Please enter a valid city name (letters and spaces only).');
             return;
@@ -38,10 +39,30 @@ const HomeScreen: React.FC = () => {
             setWeather(weatherData);
             setLoading(false);
         } catch (error) {
-            console.error(error);
+            console.log(error);
             setLoading(false);
         }
     };
+
+    const fiveHourForecast = useMemo(() => {
+        if (!weather) return [];
+        const now = new Date();
+        const currentTimeEpoch = now.getTime();
+        const fiveHoursLaterEpoch = currentTimeEpoch + 5 * 60 * 60 * 1000; // Time in 5 hours in milliseconds
+
+        // Gather hourly data for the current day and the next day
+        const hourlyData = [
+            ...weather?.forecast?.forecastday?.[0]?.hour,
+            ...weather?.forecast?.forecastday?.[1]?.hour,
+        ];
+
+        // Filter hourly data to include only forecasts for the next 5 hours
+        return hourlyData?.filter(
+            (hour) =>
+                new Date(hour?.time).getTime() >= currentTimeEpoch &&
+                new Date(hour?.time).getTime() <= fiveHoursLaterEpoch,
+        );
+    }, [weather]);
 
     return (
         <KeyboardAvoidingView
@@ -60,7 +81,7 @@ const HomeScreen: React.FC = () => {
                         setCity(text);
                         setError('');
                     }}
-                    onEndEditing={handleFetchWeather}
+                    onEndEditing={() => handleFetchWeather(city)}
                     keyboardType="default"
                     returnKeyType="done"
                     autoCorrect={false}
@@ -69,11 +90,11 @@ const HomeScreen: React.FC = () => {
                 {loading ? <ActivityIndicator size="large" color={Colours.PRIMARY} /> : null}
                 {!!weather && (
                     <WeatherCard
-                        name={weather?.name}
-                        country={weather?.country}
-                        currentConditionIcon={weather?.currentConditionIcon}
-                        currentConditionText={weather?.currentConditionText}
-                        fiveHourForecast={weather?.fiveHourForecast}
+                        name={weather?.location?.name}
+                        country={weather?.location?.country}
+                        currentConditionIcon={`https:${weather?.current?.condition?.icon}`}
+                        currentConditionText={weather?.current?.condition?.text}
+                        fiveHourForecast={fiveHourForecast}
                     />
                 )}
             </ImageBackground>
