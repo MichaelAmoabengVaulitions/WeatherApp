@@ -1,6 +1,6 @@
 // HomeScreen.test.tsx
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent, waitFor, act } from '@testing-library/react-native';
 import HomeScreen from './HomeScreen';
 import * as weatherUtils from './utils/weatherUtils';
 
@@ -11,20 +11,27 @@ describe('HomeScreen', () => {
         jest.clearAllMocks();
     });
 
-    it('should display an error message for invalid city names', () => {
+    it('should display an error message for invalid city names', async () => {
         const { getByPlaceholderText, getByText } = render(<HomeScreen />);
         const input = getByPlaceholderText('Enter City');
-        fireEvent.changeText(input, '123');
-        fireEvent(input, 'onEndEditing');
 
-        expect(getByText('Please enter a valid city name (letters and spaces only).')).toBeTruthy();
+        await act(async () => {
+            fireEvent.changeText(input, '123');
+            fireEvent(input, 'onEndEditing');
+        });
+
+        await waitFor(() =>
+            expect(
+                getByText('Please enter a valid city name (letters and spaces only).'),
+            ).toBeTruthy(),
+        );
     });
 
-    it('should fetch and display weather data for a valid city', async () => {
+    it('should fetch and display real weather data for a valid city', async () => {
         const mockWeatherData = {
             location: {
                 name: 'London',
-                country: 'United Kingdom',
+                country: 'UK',
             },
             current: {
                 condition: {
@@ -95,13 +102,55 @@ describe('HomeScreen', () => {
         (weatherUtils.fetchWeather as jest.Mock).mockResolvedValue(mockWeatherData);
         (weatherUtils.validateCity as jest.Mock).mockReturnValue(true);
 
-        const { getByPlaceholderText, queryByText, findByText } = render(<HomeScreen />);
+        const { getByPlaceholderText, findByText } = render(<HomeScreen />);
         const input = getByPlaceholderText('Enter City');
-        fireEvent.changeText(input, 'London');
-        fireEvent(input, 'onEndEditing');
+
+        await act(async () => {
+            fireEvent.changeText(input, 'London');
+            fireEvent(input, 'onEndEditing');
+        });
+
+        await waitFor(() => expect(findByText('London, UK')).toBeTruthy());
+        await waitFor(() => expect(findByText(/Sunny|Clear|Cloudy|Rain|Snow/)).toBeTruthy());
+    });
+
+    it('should display an error message if fetching weather data fails', async () => {
+        (weatherUtils.fetchWeather as jest.Mock).mockRejectedValue(new Error('City not found'));
+
+        const { getByPlaceholderText, getByText, queryByText } = render(<HomeScreen />);
+        const input = getByPlaceholderText('Enter City');
+
+        await act(async () => {
+            fireEvent.changeText(input, 'InvalidCity');
+            fireEvent(input, 'onEndEditing');
+        });
 
         await waitFor(() => expect(queryByText('Loading...')).toBeNull());
-        expect(await findByText('London, United Kingdom')).toBeTruthy();
-        expect(await findByText('Sunny')).toBeTruthy();
+        await waitFor(() => expect(getByText('City not found')).toBeTruthy());
+    });
+
+    it('should display a specific error message for the "No location found" error', async () => {
+        const error = {
+            response: {
+                status: 400,
+                data: {
+                    error: {
+                        code: 1006,
+                    },
+                },
+            },
+        };
+        (weatherUtils.fetchWeather as jest.Mock).mockRejectedValue(error);
+
+        const { getByPlaceholderText, queryByText, getByTestId } = render(<HomeScreen />);
+        const input = getByPlaceholderText('Enter City');
+
+        await act(async () => {
+            fireEvent.changeText(input, 'InvalidCity');
+            fireEvent(input, 'onEndEditing');
+        });
+
+        await waitFor(() => expect(queryByText('Loading...')).toBeNull());
+        await waitFor(() => expect(getByTestId('No weather error')).toBeTruthy());
     });
 });

@@ -29,7 +29,7 @@ describe('weatherUtils', () => {
             const mockWeatherData: WeatherData = {
                 location: {
                     name: 'London',
-                    country: 'United Kingdom',
+                    country: 'UK',
                 },
                 current: {
                     condition: {
@@ -105,12 +105,31 @@ describe('weatherUtils', () => {
             expect(data).toHaveProperty('forecast');
         });
 
-        // it('should return null if fetching weather data fails', async () => {
-        //     (axios.get as jest.Mock).mockRejectedValue(new Error('City not found'));
+        it('should throw a specific error for "No location found" error', async () => {
+            const error = {
+                response: {
+                    status: 400,
+                    data: {
+                        error: {
+                            code: 1006,
+                            message: "No location found matching parameter 'q'",
+                        },
+                    },
+                },
+            };
+            (axios.get as jest.Mock).mockRejectedValue(error);
 
-        //     await expect(fetchWeather('InvalidCity')).rejects.toThrow(
-        //         'Failed to fetch weather data',
-        //     );
-        // });
+            await expect(fetchWeather('InvalidCity')).rejects.toThrow(
+                "No location found matching parameter 'q'",
+            );
+        });
+
+        it('should throw a generic error for other errors', async () => {
+            (axios.get as jest.Mock).mockRejectedValue(new Error('Network Error'));
+
+            await expect(fetchWeather('InvalidCity')).rejects.toThrow(
+                'Failed to fetch weather data',
+            );
+        });
     });
 });

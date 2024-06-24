@@ -38,8 +38,8 @@ const HomeScreen: React.FC = () => {
             const weatherData = await fetchWeather(city);
             setWeather(weatherData);
             setLoading(false);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            setError(error?.message);
             setLoading(false);
         }
     };
@@ -86,7 +86,11 @@ const HomeScreen: React.FC = () => {
                     returnKeyType="done"
                     autoCorrect={false}
                 />
-                {error ? <Text style={styles.error}>{error}</Text> : null}
+                {error && (
+                    <Text style={styles.error} testID="No weather error">
+                        {error}
+                    </Text>
+                )}
                 {loading ? <ActivityIndicator size="large" color={Colours.PRIMARY} /> : null}
                 {!!weather && (
                     <WeatherCard

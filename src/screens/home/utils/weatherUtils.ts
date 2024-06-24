@@ -43,8 +43,6 @@ export const fetchWeather = async (city: string): Promise<WeatherData | null | u
             `${API_URL}?key=${API_KEY}&q=${city}&days=2`, // Request 2 days to cover cross-day scenario
         );
 
-        if (!response?.data) return null;
-
         const { location, current, forecast } = response?.data;
 
         return {
@@ -52,8 +50,18 @@ export const fetchWeather = async (city: string): Promise<WeatherData | null | u
             current,
             forecast,
         };
-    } catch (error) {
-        console.log('Error getting weather data', error);
+    } catch (error: any) {
+        if (
+            error?.response &&
+            error?.response?.status === 400 &&
+            error?.response?.data?.error?.code === 1006
+        ) {
+            console.log("Error fetching weather data: No location found matching parameter 'q'");
+            throw new Error("No location found matching parameter 'q'");
+        } else {
+            console.log('Error fetching weather data:', error);
+            throw new Error('Failed to fetch weather data');
+        }
     }
 };
 
